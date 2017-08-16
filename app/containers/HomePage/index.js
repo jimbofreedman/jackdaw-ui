@@ -22,8 +22,22 @@ import messages from './messages';
 import { loadRepos } from '../App/actions';
 import { changeUsername } from './actions';
 import { makeSelectUsername } from './selectors';
+import { Map, CircleMarker, TileLayer } from 'react-leaflet';
+import LeafletCss from 'leaflet/dist/leaflet.css'
+
 
 export class HomePage extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
+  constructor(props) {
+    super(props)
+    this.state = {
+      position: {
+        coords: {
+          latitude: 51,
+          longitude: 0
+        }
+      }
+    }
+  }
   /**
    * when initial state username is not null, submit the form to load repos
    */
@@ -31,6 +45,18 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     if (this.props.username && this.props.username.trim().length > 0) {
       this.props.onSubmitForm();
     }
+
+    if (navigator.geolocation) {
+      navigator.geolocation.watchPosition(this.updatePosition);
+    } else {
+      console.log("Geolocation not supported");
+    }
+  }
+
+  updatePosition(position) {
+    console.log("Updating position");
+    console.log(position);
+    this.setState({position});
   }
 
   render() {
@@ -40,47 +66,18 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
       error,
       repos,
     };
+    const position = this.state.position.coords;
+    const loc = [position.latitude, position.longitude];
+    console.log(loc);
 
     return (
-      <article>
-        <Helmet
-          title="Home Page"
-          meta={[
-            { name: 'description', content: 'A React.js Boilerplate application homepage' },
-          ]}
+      <Map style={{height: '300px'}} center={loc} zoom={13}>
+        <TileLayer
+          url='http://localhost/osm_tiles/{z}/{x}/{y}.png'
+          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <div>
-          <CenteredSection>
-            <H2>
-              <FormattedMessage {...messages.startProjectHeader} />
-            </H2>
-            <p>
-              <FormattedMessage {...messages.startProjectMessage} />
-            </p>
-          </CenteredSection>
-          <Section>
-            <H2>
-              <FormattedMessage {...messages.trymeHeader} />
-            </H2>
-            <Form onSubmit={this.props.onSubmitForm}>
-              <label htmlFor="username">
-                <FormattedMessage {...messages.trymeMessage} />
-                <AtPrefix>
-                  <FormattedMessage {...messages.trymeAtPrefix} />
-                </AtPrefix>
-                <Input
-                  id="username"
-                  type="text"
-                  placeholder="mxstbr"
-                  value={this.props.username}
-                  onChange={this.props.onChangeUsername}
-                />
-              </label>
-            </Form>
-            <ReposList {...reposListProps} />
-          </Section>
-        </div>
-      </article>
+        <CircleMarker center={loc} radius={10} />
+      </Map>
     );
   }
 }
