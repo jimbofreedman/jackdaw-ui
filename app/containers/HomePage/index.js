@@ -37,6 +37,8 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
         }
       }
     }
+
+    this.updatePosition = this.updatePosition.bind(this);
   }
   /**
    * when initial state username is not null, submit the form to load repos
