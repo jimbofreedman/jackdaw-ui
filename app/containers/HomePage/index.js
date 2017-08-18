@@ -73,13 +73,15 @@ export class HomePage extends React.PureComponent { // eslint-disable-line react
     console.log(loc);
 
     return (
-      <Map style={{height: '300px'}} center={loc} zoom={13}>
-        <TileLayer
-          url='http://localhost/osm_tiles/{z}/{x}/{y}.png'
-          attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-        />
-        <CircleMarker center={loc} radius={10} />
-      </Map>
+      <div>
+        <Map cssClass="leaflet-touch" style={{height: "100vh", width: "100vw"}} center={loc} zoom={13}>
+          <TileLayer
+            url='http://localhost/osm_tiles/{z}/{x}/{y}.png'
+            attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+          />
+          <CircleMarker center={loc} radius={10} />
+        </Map>
+      </div>
     );
   }
 }
