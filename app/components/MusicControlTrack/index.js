@@ -6,7 +6,7 @@
 
 import React from 'react';
 // import styled from 'styled-components';
-import { Panel } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
 
 function MusicControlTrack(props) {
   const { track } = props;
@@ -15,10 +15,12 @@ function MusicControlTrack(props) {
   }
 
   return (
-    <Panel>
-      <h5>{track.name}</h5>
-      <h6>{track.artists[0].name} - {track.album.name} ({track.album.date})</h6>
-    </Panel>
+    <Navbar.Header>
+      <div>
+        <h5>{track.name}</h5>
+        <h6>{track.artists[0].name} - {track.album.name} ({track.album.date})</h6>
+      </div>
+    </Navbar.Header>
   );
 }
 

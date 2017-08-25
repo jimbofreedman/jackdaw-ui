@@ -6,9 +6,9 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Grid, Row, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Navbar, Nav, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
-import ReactBootstrapSlider from 'react-bootstrap-slider';
+// import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Mopidy from 'mopidy';
 import SliderCss from 'bootstrap-slider/dist/css/bootstrap-slider.min.css'; // eslint-disable-line no-unused-vars
 
@@ -16,7 +16,7 @@ import makeSelectMusicControl from './selectors';
 import config from '../../config';
 import MusicControlButton from '../../components/MusicControlButton';
 import MusicControlTrack from '../../components/MusicControlTrack';
-import MusicControlTimer from '../../components/MusicControlTimer';
+// import MusicControlTimer from '../../components/MusicControlTimer';
 
 export class MusicControl extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -83,59 +83,53 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     };
 
     return (
-      <div>
-        <Grid>
-          <Row>
-            <Col xs={6} md={6}>
-              <MusicControlTrack track={this.state.track} />
-            </Col>
-            <Col xs={6} md={6}>
-              <MusicControlTimer disabled={offline} timeEnd={this.state.track ? this.state.track.length : 0} timePosition={this.state.timePosition} playing={playing} />
-            </Col>
-          </Row>
-        </Grid>
-        <ButtonToolbar>
-          <ButtonGroup>
-            <DropdownButton dropup bsSize="large" disabled={offline || !playlists} title={(<Glyphicon glyph="music" />)}>
-              {playlists.map((playlist, index) => {
-                console.log(playlist);
-                return (<MenuItem key={index} eventKey={index}>{playlist.name}</MenuItem>);
-              })}
-            </DropdownButton>
-            <MusicControlButton glyph="fast-backward" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
-            <MusicControlButton
-              glyph={playing ? 'pause' : 'play'} disabled={offline}
-              onClick={
-                () => {
-                  if (playing) {
-                    this.mopidy.playback.pause({});
-                  } else {
-                    this.mopidy.playback.play({});
-                  }
+      <Navbar>
+        <MusicControlTrack track={this.state.track} />
+        <Nav pullRight>
+          <DropdownButton dropup bsSize="large" disabled={offline || !playlists} title={(<Glyphicon glyph="music" />)}>
+            {playlists.map((playlist, index) => {
+              console.log(playlist);
+              return (<MenuItem key={index} eventKey={index}>{playlist.name}</MenuItem>);
+            })}
+          </DropdownButton>
+          <MusicControlButton glyph="fast-backward" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
+          <MusicControlButton
+            glyph={playing ? 'pause' : 'play'} disabled={offline}
+            onClick={
+              () => {
+                if (playing) {
+                  this.mopidy.playback.pause({});
+                } else {
+                  this.mopidy.playback.play({});
                 }
               }
-            />
-            <MusicControlButton glyph="fast-forward" disabled={offline} onClick={() => { this.mopidy.playback.next({}); }} />
-          </ButtonGroup>
+            }
+          />
+          <MusicControlButton glyph="fast-forward" disabled={offline} onClick={() => { this.mopidy.playback.next({}); }} />
 
-          <ButtonGroup>
-            <MusicControlButton glyph="volume-off" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
-            <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
-            <Button bsSize="large">
-              <ReactBootstrapSlider
-                disabled={offline ? 'disabled' : null} value={this.state.volume} min={0} max={100}
-                slideStop={(evt) => {
-                  this.mopidy.playback.setVolume({ volume: evt.target.value });
-                }}
-              />
-            </Button>
-            <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
-          </ButtonGroup>
-        </ButtonToolbar>
-      </div>
+          <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
+          <Button bsSize="large">
+
+            {this.state.volume}
+          </Button>
+          <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
+        </Nav>
+      </Navbar>
     );
   }
 }
+
+/*
+  {/*<ReactBootstrapSlider}
+// {/*disabled={offline ? 'disabled' : null} value={this.state.volume} min={0} max={100}}
+// {/*slideStop={(evt) => {}
+// {/*this.mopidy.playback.setVolume({ volume: evt.target.value });}
+// {/*}}}
+// {/>}
+// {<MusicControlButton glyph="volume-off" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />}
+ */
+
+//         {/*<MusicControlTimer disabled={offline} timeEnd={this.state.track ? this.state.track.length : 0} timePosition={this.state.timePosition} playing={playing} />*/}
 
 MusicControl.propTypes = {
   dispatch: PropTypes.func.isRequired,
