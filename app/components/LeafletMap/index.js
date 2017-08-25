@@ -8,6 +8,7 @@ import React from 'react';
 // import styled from 'styled-components';
 import { Map, CircleMarker, TileLayer } from 'react-leaflet';
 import LeafletCss from 'leaflet/dist/leaflet.css'; // eslint-disable-line no-unused-vars
+import CustomLeafletCss from './leaflet.css'; // eslint-disable-line no-unused-vars
 import config from '../../config';
 
 function LeafletMap() {
