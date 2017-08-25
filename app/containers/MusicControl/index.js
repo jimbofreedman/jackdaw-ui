@@ -16,6 +16,7 @@ import makeSelectMusicControl from './selectors';
 import config from '../../config';
 import MusicControlButton from '../../components/MusicControlButton';
 import MusicControlTrack from '../../components/MusicControlTrack';
+import MusicControlTimer from '../../components/MusicControlTimer';
 
 export class MusicControl extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
@@ -39,6 +40,7 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     this.mopidy.on('event:playbackStarted', (evt) => { this.setState({ track: evt }); });
     this.mopidy.on('event:trackPlaybackStarted', (evt) => { this.setState({ track: evt.tl_track.track }); });
     this.mopidy.on('event:volumeChanged', (evt) => { this.setState({ volume: evt.volume }); });
+    this.mopidy.on('event:seeked', (evt) => { this.setState({ timePosition: evt.time_position }); });
 
     const onResumeOrPause = (data) => {
       this.setState({
@@ -76,7 +78,8 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
 
     return (
       <div>
-        <MusicControlTrack track={this.state.track} timePosition={this.state.timePosition} />
+        <MusicControlTrack track={this.state.track} />
+        <MusicControlTimer disabled={offline} timeEnd={this.state.track ? this.state.track.length : 0} timePosition={this.state.timePosition} playing={playing} />
         <ButtonToolbar>
           <ButtonGroup>
             <Button
@@ -107,7 +110,7 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
             <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
             <Button bsSize="large">
               <ReactBootstrapSlider
-                disabled={offline} value={this.state.volume} min={0} max={100}
+                disabled={offline ? 'disabled' : null} value={this.state.volume} min={0} max={100}
                 slideStop={(evt) => {
                   this.mopidy.playback.setVolume({ volume: evt.target.value });
                 }}
