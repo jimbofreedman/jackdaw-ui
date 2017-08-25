@@ -15,7 +15,7 @@ function LeafletMap() {
   const loc = [51.4665195, -0.1943263];
   return (
     <div>
-      <Map cssClass="leaflet-touch" style={{ height: '320px', width: '750px' }} center={loc} zoom={13}>
+      <Map cssClass="leaflet-touch" style={{ height: '275px', width: '750px' }} center={loc} zoom={13}>
         <TileLayer
           url={`${config.tileEndpoint}/osm_tiles/{z}/{x}/{y}.png`}
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

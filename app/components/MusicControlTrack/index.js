@@ -16,8 +16,8 @@ function MusicControlTrack(props) {
 
   return (
     <Panel>
-      <h3>{track.name}</h3>
-      <h4>{track.artists[0].name} - {track.album.name} ({track.album.date})</h4>
+      <h5>{track.name}</h5>
+      <h6>{track.artists[0].name} - {track.album.name} ({track.album.date})</h6>
     </Panel>
   );
 }

@@ -6,7 +6,7 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Grid, Row, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Mopidy from 'mopidy';
@@ -78,8 +78,16 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
 
     return (
       <div>
-        <MusicControlTrack track={this.state.track} />
-        <MusicControlTimer disabled={offline} timeEnd={this.state.track ? this.state.track.length : 0} timePosition={this.state.timePosition} playing={playing} />
+        <Grid>
+          <Row>
+            <Col xs={6} md={6}>
+              <MusicControlTrack track={this.state.track} />
+            </Col>
+            <Col xs={6} md={6}>
+              <MusicControlTimer disabled={offline} timeEnd={this.state.track ? this.state.track.length : 0} timePosition={this.state.timePosition} playing={playing} />
+            </Col>
+          </Row>
+        </Grid>
         <ButtonToolbar>
           <ButtonGroup>
             <Button

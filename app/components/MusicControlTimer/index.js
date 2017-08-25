@@ -41,15 +41,21 @@ class MusicControlTimer extends React.PureComponent { // eslint-disable-line rea
     const { timePosition, timeEnd, disabled } = this.props;
     const currentTime = timePosition + this.state.msSinceUpdate;
 
+    const formatTime = (ms) => {
+      const s = ms / 1000;
+      return `${(s / 60).toFixed(0)}:${s % 60 < 10 ? '0' : ''}${(s % 60).toFixed(0)}`;
+    };
+
     return (
       <Panel>
-        <ReactBootstrapSlider
-          disabled={disabled ? 'disabled' : null} value={currentTime} min={0} max={timeEnd}
-          slideStop={(evt) => {
-            console.log(evt);
-          }}
-        />
-        {currentTime} / {timeEnd}
+        <h6>
+          <ReactBootstrapSlider
+            disabled={disabled ? 'disabled' : null} value={currentTime} min={0} max={timeEnd}
+            slideStop={(evt) => {
+              console.log(evt);
+            }}
+          /> {formatTime(currentTime)}/{formatTime(timeEnd)}
+        </h6>
       </Panel>
     );
   }
