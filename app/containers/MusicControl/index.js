@@ -6,7 +6,7 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Grid, Row, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon } from 'react-bootstrap';
+import { Grid, Row, Col, ButtonToolbar, ButtonGroup, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Mopidy from 'mopidy';
@@ -66,11 +66,17 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
 
     this.mopidy.playback.getVolume({})
       .then((volume) => { this.setState({ volume }); });
+
+    this.mopidy.playlists.asList({}).then((data) => {
+      this.setState({ playlists: data });
+    });
   }
 
   render() {
     const offline = !this.state.online;
     const playing = this.state.playbackState === 'playing';
+    const playlists = this.state.playlists ? this.state.playlists : [];
+    console.log(playlists);
 
     const getChangeVolumeFunc = (amount) => { // eslint-disable-line arrow-body-style
       return () => this.mopidy.playback.setVolume({ volume: this.state.volume + amount });
@@ -90,13 +96,12 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
         </Grid>
         <ButtonToolbar>
           <ButtonGroup>
-            <Button
-              bsSize="large" onClick={() => {
-                this.mopidy.playlists.asList({}).then((data) => {
-                  console.log(data);
-                });
-              }}
-            ><Glyphicon glyph="music" /></Button>
+            <DropdownButton dropup bsSize="large" disabled={offline || !playlists} title={(<Glyphicon glyph="music" />)}>
+              {playlists.map((playlist, index) => {
+                console.log(playlist);
+                return (<MenuItem key={index} eventKey={index}>{playlist.name}</MenuItem>);
+              })}
+            </DropdownButton>
             <MusicControlButton glyph="fast-backward" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
             <MusicControlButton
               glyph={playing ? 'pause' : 'play'} disabled={offline}
