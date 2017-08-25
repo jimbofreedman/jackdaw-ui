@@ -9,10 +9,12 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
+import BootstrapCss from 'bootstrap/dist/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
 
 import Header from 'components/Header';
-import Footer from 'components/Footer';
 import withProgressBar from 'components/ProgressBar';
+import MusicControl from '../../containers/MusicControl';
+
 
 const AppWrapper = styled.div`
   max-width: calc(768px + 16px * 2);
@@ -35,7 +37,7 @@ export function App(props) {
       />
       <Header />
       {React.Children.toArray(props.children)}
-      <Footer />
+      <MusicControl />
     </AppWrapper>
   );
 }

@@ -11,14 +11,15 @@ import LeafletCss from 'leaflet/dist/leaflet.css'; // eslint-disable-line no-unu
 import config from '../../config';
 
 function LeafletMap() {
+  const loc = [51.4665195, -0.1943263];
   return (
     <div>
-      <Map cssClass="leaflet-touch" style={{ height: '300px', width: '600px' }} center={[55, 0]} zoom={13}>
+      <Map cssClass="leaflet-touch" style={{ height: '320px', width: '750px' }} center={loc} zoom={13}>
         <TileLayer
           url={`${config.tileEndpoint}/osm_tiles/{z}/{x}/{y}.png`}
           attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
         />
-        <CircleMarker center={[55, 0]} radius={10} />
+        <CircleMarker center={loc} radius={10} />
       </Map>
     </div>
   );
