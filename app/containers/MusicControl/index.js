@@ -6,7 +6,7 @@
 
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Navbar, Nav, Button, Glyphicon, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Modal, Grid, Row, Col, Navbar, Nav, NavItem, Button, Glyphicon, NavDropdown, MenuItem } from 'react-bootstrap';
 import { createStructuredSelector } from 'reselect';
 // import ReactBootstrapSlider from 'react-bootstrap-slider';
 import Mopidy from 'mopidy';
@@ -21,7 +21,9 @@ import MusicControlTrack from '../../components/MusicControlTrack';
 export class MusicControl extends React.PureComponent { // eslint-disable-line react/prefer-stateless-function
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      showPlaylistSelect: false,
+    };
 
     this.onOnline = this.onOnline.bind(this);
   }
@@ -52,6 +54,34 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     this.mopidy.on('event:trackPlaybackPaused', onResumeOrPause);
   }
 
+  queueAndPlay(playlistNum, trackNum) {
+    var get = function (key, object) {
+      return object[key];
+    };
+
+    var slice = function(num, arr) {
+      return arr.slice(0, num);
+    }
+
+    playlistNum = playlistNum || 0;
+    trackNum = trackNum || 0;
+    this.mopidy.playlists.getPlaylists()
+    // => list of Playlists
+      .fold(get, playlistNum)
+      // => Playlist
+      .fold(get, 'tracks')
+      .fold(slice, 4)
+      // => list of Tracks
+      .then(this.mopidy.tracklist.add)
+      // => list of TlTracks
+      .fold(get, trackNum)
+      // => TlTrack
+      .then(this.mopidy.playback.play)
+      .catch(console.error.bind(console))  // Handle errors here
+      // => null
+      .done();                       // ...or they'll be thrown here
+  }
+
   onOnline() {
     this.setState({ online: true });
 
@@ -75,49 +105,82 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
   render() {
     const offline = !this.state.online;
     const playing = this.state.playbackState === 'playing';
-    const playlists = this.state.playlists ? this.state.playlists : [];
-    console.log(playlists);
+    const playlists = this.state.playlists ? this.state.playlists.slice() : [];
+    const showPlaylistSelect = this.state.showPlaylistSelect;
+
+    const zippedPlaylists = [];
+    while (playlists.length > 0)
+      zippedPlaylists.push(playlists.splice(0, 3));
 
     const getChangeVolumeFunc = (amount) => { // eslint-disable-line arrow-body-style
       return () => this.mopidy.playback.setVolume({ volume: this.state.volume + amount });
     };
 
     return (
-      <Navbar>
-        <MusicControlTrack track={this.state.track} />
-        <Nav pullRight>
-          <DropdownButton dropup bsSize="large" disabled={offline || !playlists} title={(<Glyphicon glyph="music" />)}>
-            {playlists.map((playlist, index) => {
-              console.log(playlist);
-              return (<MenuItem key={index} eventKey={index}>{playlist.name}</MenuItem>);
-            })}
-          </DropdownButton>
-          <MusicControlButton glyph="fast-backward" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
-          <MusicControlButton
-            glyph={playing ? 'pause' : 'play'} disabled={offline}
-            onClick={
-              () => {
-                if (playing) {
-                  this.mopidy.playback.pause({});
-                } else {
-                  this.mopidy.playback.play({});
+      <div>
+        <Modal bsSize="large" show={showPlaylistSelect}>
+          <Modal.Body>
+            <Grid>
+              {zippedPlaylists.map((rowPlaylists, index) => {
+                return (
+                  <Row key={index}>
+                    {rowPlaylists.map((playlist, index2) =>
+                      <Col key={index2} md={3}>
+                        <Button
+                          style={{width: '100%', textOverflow: 'ellipsis', overflow: 'hidden'}}
+                          onClick={() => {
+                            this.setState({showPlaylistSelect: false});
+                            this.mopidy.tracklist.clear()
+                              .then(this.mopidy.tracklist.add({uri: playlist.uri}))
+                              .then(this.mopidy.playback.play())
+                          }}>
+                          {playlist.name}
+                        </Button>
+                      </Col>
+                    )}
+                  </Row>
+                );
+              })}
+            </Grid>
+          </Modal.Body>
+        </Modal>
+
+        <Navbar style={ { width: '960px' } }>
+
+          <MusicControlTrack track={this.state.track} />
+
+          <Nav>
+            <MusicControlButton glyph="music" disabled={offline} onClick={() => { this.setState({ showPlaylistSelect: !this.state.showPlaylistSelect }) }} />
+            <MusicControlButton glyph="fast-backward" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
+            <MusicControlButton
+              glyph={playing ? 'pause' : 'play'} disabled={offline}
+              onClick={
+                () => {
+                  if (playing) {
+                    this.mopidy.playback.pause({});
+                  } else {
+                    this.mopidy.playback.play({});
+                  }
                 }
               }
-            }
-          />
-          <MusicControlButton glyph="fast-forward" disabled={offline} onClick={() => { this.mopidy.playback.next({}); }} />
+            />
+            <MusicControlButton glyph="fast-forward" disabled={offline} onClick={() => { this.mopidy.playback.next({}); }} />
 
-          <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
-          <Button bsSize="large">
-
-            {this.state.volume}
-          </Button>
-          <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
-        </Nav>
-      </Navbar>
+            <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
+            <NavItem bsSize="large" style={ { width: '48px' } }>
+              {this.state.volume}
+            </NavItem>
+            <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
+          </Nav>
+        </Navbar>
+      </div>
     );
   }
 }
+
+/*
+
+ */
 
 /*
   {/*<ReactBootstrapSlider}

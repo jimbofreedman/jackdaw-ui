@@ -9,7 +9,8 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
-import BootstrapCss from 'bootstrap/dist/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
+// import BootstrapCss from 'bootstrap/dist/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
+import BootstrapSlateCss from 'css/bootstrap-slate.css'; // eslint-disable-line no-unused-vars
 
 import Header from 'components/Header';
 import withProgressBar from 'components/ProgressBar';
@@ -17,11 +18,11 @@ import MusicControl from '../../containers/MusicControl';
 
 
 const AppWrapper = styled.div`
-  max-width: calc(768px + 16px * 2);
-  margin: 0 auto;
+  width: 960px;
+  margin: 0 0 0 0 ;
   display: flex;
-  min-height: 100%;
-  padding: 0 16px;
+  min-height: 540px;
+  padding: 0 0 0 0;
   flex-direction: column;
 `;
 

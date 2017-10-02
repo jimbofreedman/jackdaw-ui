@@ -6,19 +6,20 @@
 
 import React from 'react';
 // import styled from 'styled-components';
-import { Button, Glyphicon } from 'react-bootstrap';
+import { NavItem, Glyphicon } from 'react-bootstrap';
 
 
 function MusicControlButton(props) {
   const { glyph, disabled, onClick } = props;
   return (
-    <Button
+    <NavItem
       bsSize="large"
       disabled={disabled}
       onClick={onClick}
+      style={ { width: '48px' } }
     >
       <Glyphicon glyph={glyph} />
-    </Button>
+    </NavItem>
   );
 }
 
