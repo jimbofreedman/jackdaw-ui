@@ -23,9 +23,14 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     super(props);
     this.state = {
       showPlaylistSelect: false,
+      random: false,
+      repeat: false,
+      single: false
     };
 
     this.onOnline = this.onOnline.bind(this);
+    this.getRepeatMode = this.getRepeatMode.bind(this);
+    this.nextRepeatMode = this.nextRepeatMode.bind(this);
   }
 
   componentDidMount() {
@@ -54,32 +59,28 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     this.mopidy.on('event:trackPlaybackPaused', onResumeOrPause);
   }
 
-  queueAndPlay(playlistNum, trackNum) {
-    var get = function (key, object) {
-      return object[key];
-    };
+  getRepeatMode() {
+    const newMode = this.state.repeat ? (this.state.single ? 'single' : 'repeat') : 'off';
+    return newMode;
+  }
 
-    var slice = function(num, arr) {
-      return arr.slice(0, num);
+  nextRepeatMode() {
+    const repeatMode = this.getRepeatMode();
+
+    if (repeatMode == 'off') {
+      console.log('setting repeat');
+      this.mopidy.tracklist.setRepeat([true])
+        .then(this.setState({repeat: true}));
+    } else if (repeatMode == 'repeat') {
+      console.log('setting single');
+      this.mopidy.tracklist.setSingle([true])
+        .then(this.setState({single: true}));
+    } else {
+      console.log('setting off');
+      this.mopidy.tracklist.setRepeat([false])
+        .then(this.mopidy.tracklist.setSingle([false]))
+        .then(this.setState({repeat: false, single: false}))
     }
-
-    playlistNum = playlistNum || 0;
-    trackNum = trackNum || 0;
-    this.mopidy.playlists.getPlaylists()
-    // => list of Playlists
-      .fold(get, playlistNum)
-      // => Playlist
-      .fold(get, 'tracks')
-      .fold(slice, 4)
-      // => list of Tracks
-      .then(this.mopidy.tracklist.add)
-      // => list of TlTracks
-      .fold(get, trackNum)
-      // => TlTrack
-      .then(this.mopidy.playback.play)
-      .catch(console.error.bind(console))  // Handle errors here
-      // => null
-      .done();                       // ...or they'll be thrown here
   }
 
   onOnline() {
@@ -100,6 +101,15 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     this.mopidy.playlists.asList({}).then((data) => {
       this.setState({ playlists: data });
     });
+
+    this.mopidy.tracklist.getRandom()
+      .then((random) => { this.setState({ random }); });
+
+    this.mopidy.tracklist.getRepeat()
+      .then((repeat) => { this.setState({ repeat }); });
+
+    this.mopidy.tracklist.getSingle()
+      .then((single) => { this.setState({ single }); });
   }
 
   render() {
@@ -108,6 +118,11 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     const playlists = this.state.playlists ? this.state.playlists.slice() : [];
     const showPlaylistSelect = this.state.showPlaylistSelect;
 
+    const repeatMode = this.getRepeatMode();
+
+    console.log(this.state.random);
+    console.log(this.state.repeatMode);
+
     const zippedPlaylists = [];
     while (playlists.length > 0)
       zippedPlaylists.push(playlists.splice(0, 3));
@@ -115,6 +130,12 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     const getChangeVolumeFunc = (amount) => { // eslint-disable-line arrow-body-style
       return () => this.mopidy.playback.setVolume({ volume: this.state.volume + amount });
     };
+
+    const repeatGlyphs = {
+      'off': 'refresh',
+      'repeat': 'refresh',
+      'single': 'repeat'
+    }
 
     return (
       <div>
@@ -171,6 +192,11 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
               {this.state.volume}
             </NavItem>
             <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
+            <MusicControlButton glyph="random" active={this.state.random} disabled={offline} onClick={() => {
+              this.mopidy.tracklist.setRandom([!this.state.random])
+                .then(this.setState({random: !this.state.random}));
+            }} />
+            <MusicControlButton glyph={repeatGlyphs[repeatMode]} active={repeatMode != 'off'} disabled={offline} onClick={() => { this.nextRepeatMode(); }} />
           </Nav>
         </Navbar>
       </div>

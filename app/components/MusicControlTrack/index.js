@@ -19,7 +19,7 @@ function MusicControlTrack(props) {
   }
 
   return (
-    <Navbar.Header style={{ width: '580px' }}>
+    <Navbar.Header style={{ width: '500px' }}>
       <div>
         <h5>{track.name}</h5>
         <h6>{track.artists[0].name} - {track.album.name} ({track.album.date})</h6>
