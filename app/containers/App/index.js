@@ -10,7 +10,7 @@ import React from 'react';
 import Helmet from 'react-helmet';
 import styled from 'styled-components';
 // import BootstrapCss from 'bootstrap/dist/css/bootstrap.min.css'; // eslint-disable-line no-unused-vars
-import BootstrapSlateCss from 'css/bootstrap-slate.css'; // eslint-disable-line no-unused-vars
+import BootstrapSlateCss from '../../bootstrap-slate.css'; // eslint-disable-line no-unused-vars
 
 import { connect } from 'react-redux';
 import { createStructuredSelector } from 'reselect';

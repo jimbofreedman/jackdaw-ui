@@ -17,7 +17,7 @@ export class Map extends React.PureComponent { // eslint-disable-line react/pref
   render() {
     const position = this.props.Map.data ? [this.props.Map.data.latitude, this.props.Map.data.longitude] : [0, 0];
     console.log(this.props.Map.data ? this.props.Map.data.time : '');
-    console.log(position);
+    // console.log(position);
     return (
       <LeafletMap position={position} />
     );
