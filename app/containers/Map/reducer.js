@@ -31,7 +31,6 @@ function mapReducer(state = initialState, action) {
         .set('loading', false)
         .set('data', action.data);
     case LOAD_GPS_DATA_ERROR:
-      console.log('LOAD_GPS_DATA_ERROR');
       return state
         .set('error', action.error)
         .set('loading', false);

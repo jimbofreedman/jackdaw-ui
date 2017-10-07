@@ -39,7 +39,7 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
       callingConvention: 'by-position-or-by-name',
       console: true,
     });
-    this.mopidy.on(console.log.bind(console)); // es-lint-disable-line no-console
+    // this.mopidy.on(console.log.bind(console)); // es-lint-disable-line no-console
 
     this.mopidy.on('state:online', () => { this.onOnline(); });
     this.mopidy.on('state:offline', () => { this.setState({ online: false }); });
