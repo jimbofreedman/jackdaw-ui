@@ -14,29 +14,10 @@ import config from '../../config';
 export class LeafletMap extends React.PureComponent {
   constructor(props) {
     super(props);
-
-    this.state = {
-      position: [0, 0],
-    };
-
-    this.updatePosition = this.updatePosition.bind(this);
-  }
-
-  componentDidMount() {
-    if (navigator.geolocation) {
-      navigator.geolocation.watchPosition(this.updatePosition);
-    } else {
-      console.log('Geolocation not supported');
-    }
-  }
-
-  updatePosition(position) {
-    console.log(position);
-    this.setState({ position: [position.coords.latitude, position.coords.longitude] });
   }
 
   render() {
-    const { position } = this.state;
+    const { position } = this.props;
     return (
       <div>
         <Map cssClass="leaflet-touch" style={{ height: '480px', width: '960px' }} center={position} zoom={13}>
@@ -52,7 +33,7 @@ export class LeafletMap extends React.PureComponent {
 }
 
 LeafletMap.propTypes = {
-
+  position: React.PropTypes.array,
 };
 
 export default LeafletMap;

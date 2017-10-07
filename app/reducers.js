@@ -10,6 +10,8 @@ import { LOCATION_CHANGE } from 'react-router-redux';
 import globalReducer from 'containers/App/reducer';
 import languageProviderReducer from 'containers/LanguageProvider/reducer';
 import musicReducer from 'containers/MusicControl/reducer';
+import mapReducer from 'containers/Map/reducer';
+import rest from './rest';
 
 /*
  * routeReducer
@@ -48,6 +50,8 @@ export default function createReducer(asyncReducers) {
     global: globalReducer,
     language: languageProviderReducer,
     music: musicReducer,
+    map: mapReducer,
     ...asyncReducers,
+    ...rest.reducers,
   });
 }

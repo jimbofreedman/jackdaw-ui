@@ -11,11 +11,8 @@ import { NavItem, Glyphicon, Button } from 'react-bootstrap';
 
 function MusicControlButton(props) {
   const { glyph, disabled, onClick, active } = props;
-  console.log(glyph);
-  console.log(active);
   return (
     <NavItem
-      bsSize="large"
       active={active}
       disabled={disabled}
       onClick={onClick}

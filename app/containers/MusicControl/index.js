@@ -68,15 +68,12 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     const repeatMode = this.getRepeatMode();
 
     if (repeatMode == 'off') {
-      console.log('setting repeat');
       this.mopidy.tracklist.setRepeat([true])
         .then(this.setState({repeat: true}));
     } else if (repeatMode == 'repeat') {
-      console.log('setting single');
       this.mopidy.tracklist.setSingle([true])
         .then(this.setState({single: true}));
     } else {
-      console.log('setting off');
       this.mopidy.tracklist.setRepeat([false])
         .then(this.mopidy.tracklist.setSingle([false]))
         .then(this.setState({repeat: false, single: false}))
@@ -119,9 +116,6 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
     const showPlaylistSelect = this.state.showPlaylistSelect;
 
     const repeatMode = this.getRepeatMode();
-
-    console.log(this.state.random);
-    console.log(this.state.repeatMode);
 
     const zippedPlaylists = [];
     while (playlists.length > 0)
@@ -188,7 +182,7 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
             <MusicControlButton glyph="fast-forward" disabled={offline} onClick={() => { this.mopidy.playback.next({}); }} />
 
             <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
-            <NavItem bsSize="large" style={ { width: '48px' } }>
+            <NavItem style={ { width: '48px' } }>
               {this.state.volume}
             </NavItem>
             <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
