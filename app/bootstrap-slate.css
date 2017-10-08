@@ -7280,6 +7280,7 @@ body {
   transform: scale(2);
   transform-origin: 0 0;
   overflow: hidden;
+  margin-top: 70px;
 }
 
 ::-webkit-scrollbar {
