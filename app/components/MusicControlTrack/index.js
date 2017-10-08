@@ -11,7 +11,7 @@ import { Navbar } from 'react-bootstrap';
 function MusicControlTrack(props) {
   const { track } = props;
   if (!track) {
-    return (<Navbar.Header style={{ width: '190px' }}>
+    return (<Navbar.Header>
       <div>
         <h4>No track</h4>
       </div>
@@ -19,10 +19,10 @@ function MusicControlTrack(props) {
   }
 
   return (
-    <Navbar.Header style={{ width: '190px' }}>
+    <Navbar.Header>
       <div>
-        <h5>{track.name}</h5>
-        <h6>{track.artists[0].name} - {track.album.name} ({track.album.date})</h6>
+        <h3>{track.name}</h3>
+        <h4>{track.artists[0].name} - {track.album.name} ({track.album.date})</h4>
       </div>
     </Navbar.Header>
   );

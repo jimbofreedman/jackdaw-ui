@@ -119,7 +119,7 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
 
     const zippedPlaylists = [];
     while (playlists.length > 0)
-      zippedPlaylists.push(playlists.splice(0, 3));
+      zippedPlaylists.push(playlists.splice(0, 2));
 
     const getChangeVolumeFunc = (amount) => { // eslint-disable-line arrow-body-style
       return () => this.mopidy.playback.setVolume({ volume: this.state.volume + amount });
@@ -140,16 +140,17 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
                 return (
                   <Row key={index}>
                     {rowPlaylists.map((playlist, index2) =>
-                      <Col key={index2} md={3}>
+                      <Col key={index2} md={6}>
                         <Button
-                          style={{width: '100%', textOverflow: 'ellipsis', overflow: 'hidden'}}
+                          bsSize="large"
+                          style={{width: '95%', textOverflow: 'ellipsis', overflow: 'hidden'}}
                           onClick={() => {
                             this.setState({showPlaylistSelect: false});
                             this.mopidy.tracklist.clear()
                               .then(this.mopidy.tracklist.add({uri: playlist.uri}))
                               .then(this.mopidy.playback.play())
                           }}>
-                          {playlist.name}
+                          <h2>{playlist.name}</h2>
                         </Button>
                       </Col>
                     )}
@@ -160,11 +161,11 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
           </Modal.Body>
         </Modal>
 
-        <Navbar style={ { width: '960px' } }>
+        <Navbar style={ { width: '1280px' } }>
 
           <MusicControlTrack track={this.state.track} />
 
-          <Nav>
+          <Nav pullRight>
             <MusicControlButton glyph="music" disabled={offline} onClick={() => { this.setState({ showPlaylistSelect: !this.state.showPlaylistSelect }) }} />
             <MusicControlButton glyph="fast-backward" disabled={offline} onClick={() => { this.mopidy.playback.previous({}); }} />
             <MusicControlButton
@@ -182,8 +183,8 @@ export class MusicControl extends React.PureComponent { // eslint-disable-line r
             <MusicControlButton glyph="fast-forward" disabled={offline} onClick={() => { this.mopidy.playback.next({}); }} />
 
             <MusicControlButton glyph="volume-down" disabled={offline || this.state.volume === 0} onClick={getChangeVolumeFunc(-4)} />
-            <NavItem style={ { width: '48px' } }>
-              {this.state.volume}
+            <NavItem style={ { width: '64px' } }>
+              <h3><center>{this.state.volume}</center></h3>
             </NavItem>
             <MusicControlButton glyph="volume-up" disabled={offline || this.state.volume === 100} onClick={getChangeVolumeFunc(4)} />
             <MusicControlButton glyph="random" active={this.state.random} disabled={offline} onClick={() => {

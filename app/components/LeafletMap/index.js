@@ -19,7 +19,7 @@ export class LeafletMap extends React.PureComponent {
     const { position } = this.props;
     return (
       <div>
-        <Map cssClass="leaflet-touch" style={{ height: '424px', width: '640px' }} center={position} zoom={13}>
+        <Map cssClass="leaflet-touch" style={{ height: '930px', width: '1280px' }} center={position} zoom={13} zoomControl={false}>
           <TileLayer
             url={`${config.tileEndpoint}/osm_tiles/{z}/{x}/{y}.png`}
             attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'

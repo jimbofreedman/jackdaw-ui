@@ -16,9 +16,9 @@ function MusicControlButton(props) {
       active={active}
       disabled={disabled}
       onClick={onClick}
-      style={ { width: '48px' } }
+      style={ { width: '64px' } }
     >
-      <Glyphicon glyph={glyph} />
+      <Glyphicon glyph={glyph} style={ { marginTop: '18px', fontSize: '2em' } } />
     </NavItem>
   );
 }
